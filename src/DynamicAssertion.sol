@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT 
+
 // Copyright 2020-2024 Trust Computing GmbH.
 // This file is part of Litentry.
 //
