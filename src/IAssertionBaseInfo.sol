@@ -6,4 +6,5 @@ interface IAssertionBaseInfo {
     function description() external returns (string memory);
     function assertionType() external returns (string memory);
     function schemaUrl() external returns (string memory);
+    function condition() external returns (string memory);
 }

@@ -29,10 +29,10 @@ contract StringHelper {
     // Internal function to check if a given byte represents a whitespace character
     function isWhitespace(bytes1 char) internal pure returns (bool) {
         if (
-            char == bytes1(" ") || // Space
-            char == bytes1("\t") || // Tab
-            char == bytes1("\n") || // Newline
-            char == bytes1("\r")
+            char == bytes1(" ") // Space
+                || char == bytes1("\t") // Tab
+                || char == bytes1("\n") // Newline
+                || char == bytes1("\r")
         ) {
             return true;
         }

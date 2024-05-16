@@ -20,8 +20,13 @@ pragma solidity ^0.8.8;
 
 import {DynamicAssertion, Identity} from "./DynamicAssertion.sol";
 import "./IAssertionBaseInfo.sol";
+import "./ConditionLibrary.sol";
 
 contract A1 is DynamicAssertion, IAssertionBaseInfo {
+    using ConditionLibrary for ConditionLibrary.CompositeCondition;
+
+    ConditionLibrary.CompositeCondition public compositeCondition;
+
     /**
      * Returns: (from left to right in order)
      *     AssertionDescription/AssertionType/Assertion codes/AssertionSchemaUrl/AssertionResult
@@ -31,9 +36,7 @@ contract A1 is DynamicAssertion, IAssertionBaseInfo {
         override
         returns (string memory, string memory, string[] memory, string memory, bool)
     {
-        assertions.push(
-            '{"and": [{ "src": "$has_web2_account", "op": "==", "dst": "true" }, { "src": "$has_web3_account", "op": "==", "dst": "true" } ] }'
-        );
+        assertions.push(this.condition());
 
         return (this.description(), this.assertionType(), assertions, this.schemaUrl(), joinWeb2AndWeb3(identities));
     }
@@ -56,6 +59,13 @@ contract A1 is DynamicAssertion, IAssertionBaseInfo {
             "https://raw.githubusercontent.com/litentry/vc-jsonschema/main/dist/schemas/1-basic-identity-verification/1-0-0.json";
 
         return assertionSchemaUrl;
+    }
+
+    function condition() external returns (string memory) {
+        compositeCondition.andOp("$has_web2_account", ConditionLibrary.Operator.Equal, "true");
+        compositeCondition.andOp("$has_web3_account", ConditionLibrary.Operator.Equal, "true");
+
+        return compositeCondition.toString();
     }
 
     /**
