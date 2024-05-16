@@ -62,16 +62,23 @@ contract A1 is DynamicAssertion, IAssertionBaseInfo {
      * Result
      */
     function joinWeb2AndWeb3(Identity[] memory identities) private pure returns (bool result) {
-        bool has_web3_identity = false;
         bool has_web2_identity = false;
+        bool has_web3_identity = false;
 
         for (uint256 i = 0; i < identities.length; i++) {
             if (is_web2(identities[i])) {
                 has_web2_identity = true;
-            } else if (is_web3(identities[i])) {
+            }
+            if (is_web3(identities[i])) {
                 has_web3_identity = true;
             }
+
+            // Early exit if both web2 and web3 identities are found
+            if (has_web2_identity && has_web3_identity) {
+                return true;
+            }
         }
-        result = has_web2_identity && has_web3_identity;
+
+        return false; // Return false if either web2 or web3 identity is missing
     }
 }
