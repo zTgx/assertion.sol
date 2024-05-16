@@ -5,23 +5,43 @@ import {Test, console} from "forge-std/Test.sol";
 import "../src/ConditionLibrary.sol";
 
 contract TestConditionLibrary is Test {
-    using ConditionLibrary for ConditionLibrary.Condition[];
+    using ConditionLibrary for ConditionLibrary.CompositeCondition;
 
-    ConditionLibrary.Condition[] conditions;
+    ConditionLibrary.CompositeCondition public compositeCondition;
 
-    function testAddConditionAndSerialize() public {
-        // Add test conditions
-        conditions.addCondition("age", ConditionLibrary.Operator.GreaterThanOrEqual, "18");
-        conditions.addCondition("score", ConditionLibrary.Operator.LessThanOrEqual, "100");
+    function testAndOp() public {
+        // Add conditions using 'andOp' operation
+        compositeCondition.andOp("age", ConditionLibrary.Operator.GreaterThanOrEqual, "18");
+        compositeCondition.andOp("score", ConditionLibrary.Operator.LessThanOrEqual, "100");
 
-        // Serialize conditions
-        string memory serialized = conditions.toString();
+        // Serialize the composite condition
+        string memory serialized = compositeCondition.serializeConditions();
 
-        // Define expected serialized output
-        string memory expectedSerialized =
-            '{"and": [{ "src": "age", "op": ">=", "dst": "18" }, { "src": "score", "op": "<=", "dst": "100" } ] }';
+        // Define the expected serialized output for 'And' operation
+        string memory expectedSerialized = '{ "and": [ { "src": "age", "op": ">=", "dst": "18" }, { "src": "score", "op": "<=", "dst": "100" } ] }';
 
-        // Assert that the serialized output matches the expected JSON-like format
-        assertEq(serialized, expectedSerialized, "Serialized output does not match expected format");
+        StringHelper stringHelper = new StringHelper();
+        string memory trimmedString = stringHelper.removeWhitespace(expectedSerialized);
+
+        // Assert that the serialized output matches the expected format for 'Or' operation
+        assertEq(serialized, trimmedString, "Serialized output does not match expected format (Or)");
+    }
+
+    function testOrOp() public {
+        // Add conditions using 'orOp' operation
+        compositeCondition.orOp("name", ConditionLibrary.Operator.Equal, "Alice");
+        compositeCondition.orOp("name", ConditionLibrary.Operator.Equal, "Bob");
+
+        // Serialize the composite condition
+        string memory serialized = compositeCondition.serializeConditions();
+
+        // Define the expected serialized output for 'Or' operation
+        string memory expectedSerialized = '{ "or": [ { "src": "name", "op": "==", "dst": "Alice" }, { "src": "name", "op": "==", "dst": "Bob" } ] }';
+
+        StringHelper stringHelper = new StringHelper();
+        string memory trimmedString = stringHelper.removeWhitespace(expectedSerialized);
+
+        // Assert that the serialized output matches the expected format for 'Or' operation
+        assertEq(serialized, trimmedString, "Serialized output does not match expected format (Or)");
     }
 }
