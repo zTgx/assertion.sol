@@ -19,23 +19,49 @@
 pragma solidity ^0.8.8;
 
 import {DynamicAssertion, Identity} from "./DynamicAssertion.sol";
+import "./IAssertionBaseInfo.sol";
 
-contract A1 is DynamicAssertion {
+contract A1 is DynamicAssertion, IAssertionBaseInfo {
+    /**
+     * Returns: (from left to right in order)
+     *     AssertionDescription/AssertionType/Assertion codes/AssertionSchemaUrl/AssertionResult
+     */
     function execute(Identity[] memory identities, string[] memory)
         public
         override
         returns (string memory, string memory, string[] memory, string memory, bool)
     {
-        string memory description = "You've identified at least one account/address in both Web2 and Web3.";
-        string memory assertion_type = "Basic Identity Verification";
         assertions.push(
             '{"and": [{ "src": "$has_web2_account", "op": "==", "dst": "true" }, { "src": "$has_web3_account", "op": "==", "dst": "true" } ] }'
         );
-        schema_url =
+
+        return (this.description(), this.assertionType(), assertions, this.schemaUrl(), joinWeb2AndWeb3(identities));
+    }
+
+    /**
+     * Impl IAssertionBaseInfo callbacks
+     */
+    function description() external pure returns (string memory) {
+        string memory assertionDescription = "You've identified at least one account/address in both Web2 and Web3.";
+        return assertionDescription;
+    }
+
+    function assertionType() external pure returns (string memory) {
+        string memory assertionTypeStr = "Basic Identity Verification";
+        return assertionTypeStr;
+    }
+
+    function schemaUrl() external pure returns (string memory) {
+        string memory assertionSchemaUrl =
             "https://raw.githubusercontent.com/litentry/vc-jsonschema/main/dist/schemas/1-basic-identity-verification/1-0-0.json";
 
-        bool result;
+        return assertionSchemaUrl;
+    }
 
+    /**
+     * Result
+     */
+    function joinWeb2AndWeb3(Identity[] memory identities) private pure returns (bool result) {
         bool has_web3_identity = false;
         bool has_web2_identity = false;
 
@@ -47,7 +73,5 @@ contract A1 is DynamicAssertion {
             }
         }
         result = has_web2_identity && has_web3_identity;
-
-        return (description, assertion_type, assertions, schema_url, result);
     }
 }
