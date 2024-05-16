@@ -21,20 +21,14 @@ import "openzeppelin-contracts/contracts/utils/Strings.sol";
 
 contract A6 is DynamicAssertion {
     function execute(Identity[] memory identities, string[] memory secrets)
-    public
-    override
-    returns (
-        string memory,
-        string memory,
-        string[] memory,
-        string memory,
-        bool
-    )
+        public
+        override
+        returns (string memory, string memory, string[] memory, string memory, bool)
     {
-        string
-        memory description = "The range of the user's Twitter follower count";
+        string memory description = "The range of the user's Twitter follower count";
         string memory assertion_type = "Twitter Follower Amount";
-        schema_url = "https://raw.githubusercontent.com/litentry/vc-jsonschema/main/dist/schemas/6-twitter-follower-amount/1-0-0.json";
+        schema_url =
+            "https://raw.githubusercontent.com/litentry/vc-jsonschema/main/dist/schemas/6-twitter-follower-amount/1-0-0.json";
 
         bool result;
 
@@ -42,24 +36,15 @@ contract A6 is DynamicAssertion {
 
         for (uint256 i = 0; i < identities.length; i++) {
             if (is_twitter(identities[i])) {
-                string memory url = concatenateStrings(
-                    "http://localhost:19528/2/users/by/username/",
-                    string(identities[i].value)
-                );
-                string memory full_url = concatenateStrings(
-                    url,
-                    "?user.fields=public_metrics"
-                );
+                string memory url =
+                    concatenateStrings("http://localhost:19528/2/users/by/username/", string(identities[i].value));
+                string memory full_url = concatenateStrings(url, "?user.fields=public_metrics");
 
                 HttpHeader[] memory headers = new HttpHeader[](1);
                 // we expect first secret to be twitter api key
                 headers[0] = HttpHeader("authorization", secrets[0]);
 
-                int64 followers_count = GetI64(
-                    full_url,
-                    "/data/public_metrics/followers_count",
-                    headers
-                );
+                int64 followers_count = GetI64(full_url, "/data/public_metrics/followers_count", headers);
 
                 sum += followers_count;
             }
@@ -90,20 +75,14 @@ contract A6 is DynamicAssertion {
         result = true;
 
         /**
-        Strings.toString(min)
-
-        Compiler run failed:
-        Error (9553): Invalid type for argument in function call. Invalid implicit conversion from int64 to uint256 requested.
-
+         * Strings.toString(min)
+         *
+         *     Compiler run failed:
+         *     Error (9553): Invalid type for argument in function call. Invalid implicit conversion from int64 to uint256 requested.
          */
-        string memory assertion = concatenateStrings(
-            '{"and": [{ "src": "$total_followers", "op": ">", "dst": "',
-            Strings.toString(min)
-        );
-        assertion = concatenateStrings(
-            assertion,
-            '" }, { "src": "$has_web3_account", "op": "<=", "dst": "'
-        );
+        string memory assertion =
+            concatenateStrings('{"and": [{ "src": "$total_followers", "op": ">", "dst": "', Strings.toString(min));
+        assertion = concatenateStrings(assertion, '" }, { "src": "$has_web3_account", "op": "<=", "dst": "');
         assertion = concatenateStrings(assertion, Strings.toString(max));
         assertion = concatenateStrings(assertion, '" } ] }');
         assertions.push(assertion);

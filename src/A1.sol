@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT 
+// SPDX-License-Identifier: MIT
 
 // Copyright 2020-2024 Trust Computing GmbH.
 // This file is part of Litentry.
@@ -22,23 +22,17 @@ import {DynamicAssertion, Identity} from "./DynamicAssertion.sol";
 
 contract A1 is DynamicAssertion {
     function execute(Identity[] memory identities, string[] memory)
-    public
-    override
-    returns (
-        string memory,
-        string memory,
-        string[] memory,
-        string memory,
-        bool
-    )
+        public
+        override
+        returns (string memory, string memory, string[] memory, string memory, bool)
     {
-        string
-        memory description = "You've identified at least one account/address in both Web2 and Web3.";
+        string memory description = "You've identified at least one account/address in both Web2 and Web3.";
         string memory assertion_type = "Basic Identity Verification";
         assertions.push(
             '{"and": [{ "src": "$has_web2_account", "op": "==", "dst": "true" }, { "src": "$has_web3_account", "op": "==", "dst": "true" } ] }'
         );
-        schema_url = "https://raw.githubusercontent.com/litentry/vc-jsonschema/main/dist/schemas/1-basic-identity-verification/1-0-0.json";
+        schema_url =
+            "https://raw.githubusercontent.com/litentry/vc-jsonschema/main/dist/schemas/1-basic-identity-verification/1-0-0.json";
 
         bool result;
 
