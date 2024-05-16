@@ -19,7 +19,7 @@ pragma solidity ^0.8.8;
 import {DynamicAssertion, Identity} from "./DynamicAssertion.sol";
 
 contract A1 is DynamicAssertion {
-    function execute(Identity[] memory identities, string[] memory secrets)
+    function execute(Identity[] memory identities, string[] memory)
     public
     override
     returns (

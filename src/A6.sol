@@ -17,7 +17,7 @@
 pragma solidity ^0.8.8;
 
 import {DynamicAssertion, Identity, HttpHeader} from "./DynamicAssertion.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.0/contracts/utils/Strings.sol";
+import "openzeppelin-contracts/contracts/utils/Strings.sol";
 
 contract A6 is DynamicAssertion {
     function execute(Identity[] memory identities, string[] memory secrets)
@@ -65,8 +65,8 @@ contract A6 is DynamicAssertion {
             }
         }
 
-        int64 min = 0;
-        int64 max = 0;
+        uint256 min = 0;
+        uint256 max = 0;
 
         if (sum >= 0 && sum <= 1) {
             min = 0;
@@ -89,6 +89,13 @@ contract A6 is DynamicAssertion {
         }
         result = true;
 
+        /**
+        Strings.toString(min)
+
+        Compiler run failed:
+        Error (9553): Invalid type for argument in function call. Invalid implicit conversion from int64 to uint256 requested.
+
+         */
         string memory assertion = concatenateStrings(
             '{"and": [{ "src": "$total_followers", "op": ">", "dst": "',
             Strings.toString(min)
