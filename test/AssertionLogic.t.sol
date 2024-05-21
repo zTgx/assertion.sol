@@ -2,17 +2,18 @@
 pragma solidity ^0.8.0;
 
 import {Test, console} from "forge-std/Test.sol";
-import "../src/ConditionLibrary.sol";
+import "../src/AssertionLogic.sol";
+import "../src/Helpers.sol";
 
-contract TestConditionLibrary is Test {
-    using ConditionLibrary for ConditionLibrary.CompositeCondition;
+contract TestAssertionLogic is Test {
+    using AssertionLogic for AssertionLogic.CompositeCondition;
 
-    ConditionLibrary.CompositeCondition public compositeCondition;
+    AssertionLogic.CompositeCondition public compositeCondition;
 
     function testAndOp() public {
         // Add conditions using 'andOp' operation
-        compositeCondition.andOp("age", ConditionLibrary.Operator.GreaterThanOrEqual, "18");
-        compositeCondition.andOp("score", ConditionLibrary.Operator.LessThanOrEqual, "100");
+        compositeCondition.andOp("age", AssertionLogic.Operator.GreaterThanOrEqual, "18");
+        compositeCondition.andOp("score", AssertionLogic.Operator.LessThanOrEqual, "100");
 
         // Serialize the composite condition
         string memory serialized = compositeCondition.toString();
@@ -30,8 +31,8 @@ contract TestConditionLibrary is Test {
 
     function testOrOp() public {
         // Add conditions using 'orOp' operation
-        compositeCondition.orOp("name", ConditionLibrary.Operator.Equal, "Alice");
-        compositeCondition.orOp("name", ConditionLibrary.Operator.Equal, "Bob");
+        compositeCondition.orOp("name", AssertionLogic.Operator.Equal, "Alice");
+        compositeCondition.orOp("name", AssertionLogic.Operator.Equal, "Bob");
 
         // Serialize the composite condition
         string memory serialized = compositeCondition.toString();
@@ -48,8 +49,8 @@ contract TestConditionLibrary is Test {
     }
 
     function testAndOp2() public {
-        compositeCondition.andOp("$has_web2_account", ConditionLibrary.Operator.Equal, "true");
-        compositeCondition.andOp("$has_web3_account", ConditionLibrary.Operator.Equal, "true");
+        compositeCondition.andOp("$has_web2_account", AssertionLogic.Operator.Equal, "true");
+        compositeCondition.andOp("$has_web3_account", AssertionLogic.Operator.Equal, "true");
         string memory serialized = compositeCondition.toString();
 
         string memory expectedSerialized =

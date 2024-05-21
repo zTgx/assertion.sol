@@ -5,12 +5,12 @@ pragma solidity ^0.8.8;
 import "openzeppelin-contracts/contracts/utils/Strings.sol";
 import {DynamicAssertion, Identity, HttpHeader} from "./DynamicAssertion.sol";
 import "./IAssertionBaseInfo.sol";
-import "./ConditionLibrary.sol";
+import "./AssertionLogic.sol";
 
 contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
-    using ConditionLibrary for ConditionLibrary.CompositeCondition;
+    using AssertionLogic for AssertionLogic.CompositeCondition;
 
-    ConditionLibrary.CompositeCondition public compositeCondition;
+    AssertionLogic.CompositeCondition public compositeCondition;
 
     uint256 min = 0;
     uint256 max = 0;
@@ -53,9 +53,9 @@ contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
     }
 
     function condition() external returns (string memory) {
-        compositeCondition.andOp("$lit_staking_amount", ConditionLibrary.Operator.GreaterThan, Strings.toString(min));
+        compositeCondition.andOp("$lit_staking_amount", AssertionLogic.Operator.GreaterThan, Strings.toString(min));
         compositeCondition.andOp(
-            "$lit_staking_amount", ConditionLibrary.Operator.LessThanOrEqual, Strings.toString(max)
+            "$lit_staking_amount", AssertionLogic.Operator.LessThanOrEqual, Strings.toString(max)
         );
 
         return compositeCondition.toString();

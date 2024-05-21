@@ -1,18 +1,16 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 pragma solidity ^0.8.8;
 
-import "./Helpers.sol";
-
-library ConditionLibrary {
+library AssertionLogic {
     enum Operator {
-        Equal,
         GreaterThan,
         LessThan,
         GreaterThanOrEqual,
-        LessThanOrEqual
+        LessThanOrEqual,
+        Equal,
+        NotEq
     }
-    // Add more operators as needed
 
     struct Condition {
         string src;
@@ -47,37 +45,34 @@ library ConditionLibrary {
         return cc;
     }
 
-    function toString(CompositeCondition memory cc) public returns (string memory) {
+    function toString(CompositeCondition memory cc) public pure returns (string memory) {
         string memory result = "{";
 
         if (cc.conditions.length > 0) {
-            result = string(abi.encodePacked(result, cc.isAnd ? "\"and\": [" : "\"or\": ["));
+            result = string(abi.encodePacked(result, cc.isAnd ? "\"and\":[" : "\"or\":["));
             for (uint256 i = 0; i < cc.conditions.length; i++) {
                 if (i > 0) {
-                    result = string(abi.encodePacked(result, ", "));
+                    result = string(abi.encodePacked(result, ","));
                 }
                 result = string(
                     abi.encodePacked(
                         result,
-                        '{ "src": "',
+                        '{"src":"',
                         cc.conditions[i].src,
-                        '", "op": "',
+                        '","op":"',
                         operatorToString(cc.conditions[i].op),
-                        '", "dst": "',
+                        '","dst":"',
                         cc.conditions[i].dst,
-                        '" }'
+                        '"}'
                     )
                 );
             }
             result = string(abi.encodePacked(result, "]"));
         }
 
-        result = string(abi.encodePacked(result, " }"));
+        result = string(abi.encodePacked(result, "}"));
 
-        StringHelper stringHelper = new StringHelper();
-        string memory trimmedString = stringHelper.removeWhitespace(result);
-
-        return trimmedString;
+        return result;
     }
 
     function operatorToString(Operator op) internal pure returns (string memory) {
@@ -91,6 +86,8 @@ library ConditionLibrary {
             return ">=";
         } else if (op == Operator.LessThanOrEqual) {
             return "<=";
+        } else if (op == Operator.NotEq) {
+            return "!=";
         }
         // Handle other operators if needed
         revert("Unsupported operator");

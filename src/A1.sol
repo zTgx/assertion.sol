@@ -20,12 +20,12 @@ pragma solidity ^0.8.8;
 
 import {DynamicAssertion, Identity} from "./DynamicAssertion.sol";
 import "./IAssertionBaseInfo.sol";
-import "./ConditionLibrary.sol";
+import "./AssertionLogic.sol";
 
 contract A1 is DynamicAssertion, IAssertionBaseInfo {
-    using ConditionLibrary for ConditionLibrary.CompositeCondition;
+    using AssertionLogic for AssertionLogic.CompositeCondition;
 
-    ConditionLibrary.CompositeCondition public compositeCondition;
+    AssertionLogic.CompositeCondition public compositeCondition;
 
     /**
      * Returns: (from left to right in order)
@@ -62,8 +62,8 @@ contract A1 is DynamicAssertion, IAssertionBaseInfo {
     }
 
     function condition() external returns (string memory) {
-        compositeCondition.andOp("$has_web2_account", ConditionLibrary.Operator.Equal, "true");
-        compositeCondition.andOp("$has_web3_account", ConditionLibrary.Operator.Equal, "true");
+        compositeCondition.andOp("$has_web2_account", AssertionLogic.Operator.Equal, "true");
+        compositeCondition.andOp("$has_web3_account", AssertionLogic.Operator.Equal, "true");
 
         return compositeCondition.toString();
     }
