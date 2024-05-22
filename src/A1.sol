@@ -18,13 +18,12 @@
 
 pragma solidity ^0.8.8;
 
+import "AssertionLogic/src/AssertionLogic.sol";
 import {DynamicAssertion, Identity} from "./DynamicAssertion.sol";
 import "./IAssertionBaseInfo.sol";
-import "./AssertionLogic.sol";
 
 contract A1 is DynamicAssertion, IAssertionBaseInfo {
     using AssertionLogic for AssertionLogic.CompositeCondition;
-
     AssertionLogic.CompositeCondition public compositeCondition;
 
     /**
