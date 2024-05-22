@@ -3,13 +3,14 @@
 pragma solidity ^0.8.8;
 
 import "openzeppelin-contracts/contracts/utils/Strings.sol";
+import "AssertionLogic/src/AssertionLogic.sol";
 import {DynamicAssertion, Identity, HttpHeader} from "./DynamicAssertion.sol";
 import "./IAssertionBaseInfo.sol";
-import "./AssertionLogic.sol";
 
 contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
     using AssertionLogic for AssertionLogic.CompositeCondition;
-    AssertionLogic.CompositeCondition public compositeCondition;
+
+    AssertionLogic.CompositeCondition compositeCondition;
 
     uint256 min = 0;
     uint256 max = 0;
@@ -27,7 +28,7 @@ contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
         uint256 amount = requestLitStakingAmount(identities);
 
         // min and max
-        minAndMax(amount);
+        updateMinAndMax(amount);
 
         // logic
         assertions.push(this.logic());
@@ -53,9 +54,7 @@ contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
 
     function logic() external returns (string memory) {
         compositeCondition.andOp("$lit_staking_amount", AssertionLogic.Operator.GreaterThan, Strings.toString(min));
-        compositeCondition.andOp(
-            "$lit_staking_amount", AssertionLogic.Operator.LessThanOrEqual, Strings.toString(max)
-        );
+        compositeCondition.andOp("$lit_staking_amount", AssertionLogic.Operator.LessThanOrEqual, Strings.toString(max));
 
         return compositeCondition.toString();
     }
@@ -65,7 +64,7 @@ contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
         return 35;
     }
 
-    function minAndMax(uint256 sum) private {
+    function updateMinAndMax(uint256 sum) private {
         if (sum >= 0 && sum <= 1) {
             min = 0;
             max = 1;

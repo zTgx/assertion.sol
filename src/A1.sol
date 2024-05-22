@@ -24,6 +24,7 @@ import "./IAssertionBaseInfo.sol";
 
 contract A1 is DynamicAssertion, IAssertionBaseInfo {
     using AssertionLogic for AssertionLogic.CompositeCondition;
+
     AssertionLogic.CompositeCondition public compositeCondition;
 
     /**
