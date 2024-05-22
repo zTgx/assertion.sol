@@ -9,7 +9,6 @@ import "./AssertionLogic.sol";
 
 contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
     using AssertionLogic for AssertionLogic.CompositeCondition;
-
     AssertionLogic.CompositeCondition public compositeCondition;
 
     uint256 min = 0;
@@ -30,8 +29,8 @@ contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
         // min and max
         minAndMax(amount);
 
-        // condition
-        assertions.push(this.condition());
+        // logic
+        assertions.push(this.logic());
 
         return (this.description(), this.assertionType(), assertions, this.schemaUrl(), true);
     }
@@ -52,7 +51,7 @@ contract LitStacking is DynamicAssertion, IAssertionBaseInfo {
         "https://raw.githubusercontent.com/litentry/vc-jsonschema/main/dist/schemas/17-token-holding-amount/1-1-0.json";
     }
 
-    function condition() external returns (string memory) {
+    function logic() external returns (string memory) {
         compositeCondition.andOp("$lit_staking_amount", AssertionLogic.Operator.GreaterThan, Strings.toString(min));
         compositeCondition.andOp(
             "$lit_staking_amount", AssertionLogic.Operator.LessThanOrEqual, Strings.toString(max)

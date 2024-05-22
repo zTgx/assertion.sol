@@ -36,7 +36,7 @@ contract A1 is DynamicAssertion, IAssertionBaseInfo {
         override
         returns (string memory, string memory, string[] memory, string memory, bool)
     {
-        assertions.push(this.condition());
+        assertions.push(this.logic());
 
         return (this.description(), this.assertionType(), assertions, this.schemaUrl(), joinWeb2AndWeb3(identities));
     }
@@ -61,7 +61,7 @@ contract A1 is DynamicAssertion, IAssertionBaseInfo {
         return assertionSchemaUrl;
     }
 
-    function condition() external returns (string memory) {
+    function logic() external returns (string memory) {
         compositeCondition.andOp("$has_web2_account", AssertionLogic.Operator.Equal, "true");
         compositeCondition.andOp("$has_web3_account", AssertionLogic.Operator.Equal, "true");
 
