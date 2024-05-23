@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Test, console} from "forge-std/Test.sol";
-import "../src/Helpers.sol";
+import "../src/utils/Helpers.sol";
 
 contract TestStringHelper is Test {
     StringHelper stringHelper;

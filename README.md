@@ -1,3 +1,3 @@
 ## Assertion.sol
 
-**Unofficial: Funny Assertions ONLY**
+**Assertion collection In Solidity**

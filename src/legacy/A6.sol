@@ -18,7 +18,7 @@
 
 pragma solidity ^0.8.8;
 
-import {DynamicAssertion, Identity, HttpHeader} from "./DynamicAssertion.sol";
+import {DynamicAssertion, Identity, HttpHeader} from "../DynamicAssertion.sol";
 import "openzeppelin-contracts/contracts/utils/Strings.sol";
 
 contract A6 is DynamicAssertion {
